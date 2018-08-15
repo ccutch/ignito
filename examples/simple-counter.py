@@ -1,4 +1,4 @@
-from ignito import System, Actor, message
+from ignito import System, reducer, message
 
 
 class Messages:
@@ -6,10 +6,14 @@ class Messages:
     decrement = message('decrement', int)
 
 
-def initial_state():
-    return 0
+# def initial_state():
+#     return 0
+# counter1 = Reducer("counter", initial_state)
+# counter2 = Reducer("counter", lambda: 0)
 
-counter = Actor("counter", initial_state, messages=Messages)
+@reducer()
+def counter():
+    return 0
 
 
 @counter.handle(Messages.increment)
@@ -23,10 +27,12 @@ def decrement(self, message):
 
 
 def main():
+    print(counter)
     with System("main") as sys:
         addr = sys.spawn(counter)
         addr.call(Messages.increment(1))
-        print "new state %d" % addr.get_state()
-        assert addr.get_state() == 1, "Should have a state value of 1"
+        # print("new state {}".format(addr.get_state()))
+        # assert addr.get_state() == 1, "Should have a state value of 1"
+
 
 main()
